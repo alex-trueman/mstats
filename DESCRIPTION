@@ -13,7 +13,10 @@ RoxygenNote: 6.0.1
 Imports:
     boot,
     dplyr,
+    Hmisc,
     magrittr,
+    pander,
     purrr,
     rlang,
+    stats,
     tidyr

@@ -3,17 +3,17 @@
 \name{boot_mean_ci}
 \alias{boot_mean_ci}
 \title{Calculate mean and bootstrapped confidence limits using the bias corrected and
-accelarated (BCa) method, which is more robust with low sample numbers and
+accelerated (BCa) method, which is more robust with low sample numbers and
 non-normal distributions of bootstrapped means.}
 \usage{
 boot_mean_ci(df, value, reps, conf, ...)
 }
 \arguments{
-\item{df}{Dataframe containing grouping and value fields.}
+\item{df}{Data frame containing grouping and value fields.}
 
 \item{value}{Value field for statistics.}
 
-\item{reps}{Number of bootstraping repetitions. May need to increase if
+\item{reps}{Number of bootstrapping repetitions. May need to increase if
 BCa error occurs.}
 
 \item{conf}{Confidence limits probability (e.g., 0.95).}
@@ -21,7 +21,7 @@ BCa error occurs.}
 \item{...}{One or more grouping columns.}
 }
 \value{
-Dataframe with mean and confidence limits.
+Data frame with mean and confidence limits.
 }
 \description{
 Based on https://www.painblogr.org/2017-10-18-purrring-through-bootstraps

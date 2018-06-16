@@ -15,7 +15,7 @@
 #'
 #' @return List of data frames with wide (for report tables) and tall (tidy) layout.
 #' @export
-#' @import dplyr
+#' @importFrom dplyr funs group_by left_join summarise_at summarise
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo quo_name
 #' @importFrom stats weighted.mean
@@ -67,7 +67,7 @@ means_by_group <- function(bm, bm_columns, samp, samp_value, samp_weight, group)
 #'
 #' @return Markdown format table as character string
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter group_by rename select summarise
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo UQ quo_name
 #' @importFrom stats median sd var
@@ -102,7 +102,6 @@ sumstats <- function(df, group, value, digits) {
       " grouped by ", group_str
     ),
     justify = c("center", rep("right", 8)),
-    #big.mark = ",",
     round = c(0, 0, rep(digits, 7)),
     keep.trailing.zeros = TRUE,
     split.table = Inf
@@ -122,7 +121,7 @@ sumstats <- function(df, group, value, digits) {
 #'
 #' @return Markdown format table as character string
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter group_by rename select summarise
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo UQ quo_name
 #' @importFrom stats median quantile sd var
@@ -180,7 +179,7 @@ extended_sumstats <- function(df, group, value, digits) {
 #'
 #' @return Markdown format table as character string
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter group_by rename select summarise
 #' @importFrom Hmisc wtd.var
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo UQ quo_name
@@ -239,7 +238,7 @@ weighted_sumstats <- function(df, group, value, weight, digits) {
 #'
 #' @return Markdown format table as character string
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter group_by rename select summarise
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo UQ quo_name
 #' @importFrom stats sd weighted.mean

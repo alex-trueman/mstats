@@ -15,7 +15,7 @@
 #'
 #' @return Data frame with mean and confidence limits.
 #' @export
-#' @import dplyr
+#' @importFrom dplyr group_by mutate select
 #' @importFrom rlang quos enquo quo_name
 #' @importFrom boot boot boot.ci
 #' @importFrom magrittr %>%
@@ -88,11 +88,12 @@ boot_mean_ci <- function(df, value, reps, conf, ...) {
 #'
 #' @return Data frame with weighted mean and confidence limits.
 #' @export
-#' @import dplyr
+#' @importFrom dplyr group_by mutate select
 #' @importFrom rlang quos enquo quo_name
 #' @importFrom boot boot boot.ci
 #' @importFrom magrittr %>%
 #' @importFrom purrr map
+#' @importFrom stats weighted.mean
 #' @importFrom tidyr nest unnest
 #'
 #' @examples

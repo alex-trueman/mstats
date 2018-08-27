@@ -4,3 +4,8 @@
 
 * Add `boot_wmean_ci` for weighted mean.
 * Add summary stats functions.
+
+# 0.1.2
+
+* Add `nscore` and `backtr` functions.
+* Add `descstat` function.

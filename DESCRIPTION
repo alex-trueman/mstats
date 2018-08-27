@@ -1,7 +1,7 @@
 Package: mstats
 Type: Package
 Title: Some Miscellaneous Statistical Functions
-Version: 0.1.1
+Version: 0.1.2
 Author: Alex M Trueman
 Maintainer: Alex M Trueman <amt4158@gmail.com>
 Description: Just a bunch of statistical functions that I have written and use
@@ -11,10 +11,11 @@ BugReports: https://github.com/truemoid/mstats
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Imports:
     boot,
     dplyr,
+    graphics,
     Hmisc,
     magrittr,
     pander,

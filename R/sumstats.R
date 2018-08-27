@@ -284,3 +284,44 @@ topcut_sumstats <- function(df, group, value, value_tc, weight, digits) {
     split.table = Inf
   )
 }
+
+#' Descriptive statistics for a series of columns.
+#'
+#' @author Alex M Trueman
+#'
+#' @param df Dataframe
+#' @param sep Character string separating original column name and statistic.
+#' @param ... List of column names to be evaluated.
+#'
+#' @return Dataframe of statistics for each column input.
+#' @export
+#' @importFrom dplyr funs n select summarise_all
+#' @importFrom magrittr %>%
+#' @importFrom rlang quos !!!
+#' @importFrom stats median na.omit quantile sd var
+#' @importFrom tidyr gather separate spread
+descstat <- function(df, sep, ...) {
+
+    vars <- quos(...)
+
+    x <- df %>%
+        select(!!!vars) %>%
+        na.omit() %>%
+        summarise_all(funs(
+            n = n(),
+            min = min,
+            q25 = quantile(., 0.25),
+            median = median,
+            q75 = quantile(., 0.75),
+            max = max,
+            mean = mean,
+            sd = sd,
+            var = var)) %>%
+        gather(statistic, value) %>%
+        separate(statistic, into = c("variable", "statistic"), sep = sep) %>%
+        spread(statistic, value) %>%
+        select(variable, n, min, q25, median, q75, max, mean, sd, var)
+
+    return(x)
+
+}

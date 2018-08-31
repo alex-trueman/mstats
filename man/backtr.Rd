@@ -4,12 +4,10 @@
 \alias{backtr}
 \title{Back-transform normal score transformed data.}
 \usage{
-backtr(scores, transform_table, tails = "none", draw = FALSE)
+backtr(model, tails = "none", draw = FALSE)
 }
 \arguments{
-\item{scores}{Numeric vector of normal score transformed data.}
-
-\item{transform_table}{Dataframe with column of raw data matched to column of
+\item{model}{Dataframe with column of raw data matched to column of
 normal score data. Is output of `nscore` function.}
 
 \item{tails}{Treatment of distribution tails: "none", "separate", or "equal".}
@@ -17,7 +15,7 @@ normal score data. Is output of `nscore` function.}
 \item{draw}{Plot the distributions.}
 }
 \value{
-Numeric vector of back=transformed values.
+Numeric vector of back-transformed values.
 }
 \description{
 Given a vector of normal scores and a normal score object (from nscore), the

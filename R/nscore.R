@@ -1,49 +1,31 @@
-#' Normal score transformation of data.
+
+#' Make normal score transformation model.
 #'
-#' Takes a vector of values x and calculates their normal scores. Returns a list
-#' with the scores and an ordered table of original values and scores, which is
-#' useful as a back-transform table. See backtr().
+#' Takes a vector of values x and calculates their normal scores. Returns an
+#' ordered table of original values and scores, which is useful as a
+#' back-transform model. See backtr().
 #'
 #' @author Alex M Trueman
 #' Modified from Ashton Shortridge, May/June, 2008.
 #' https://msu.edu/~ashton/research/code/nscore.R
 #' Originally based on the GSLIB code for nscore function.
 #'
-#' @param df Data frame.
-#' @param d Column in data frame to be transformed.
-#' @param na.rm Boolean, remove NAs from d. Defult is TRUE.
+#' @param x Numeric vector to be transformed.
+#' @param na.rm Boolean, remove NAs from x. Defult is TRUE.
 #'
-#' @return Named list of data frames with transformed data and transformation
-#'     table.
+#' @return Dataframe transformation model.
 #' @export
-#' @importFrom dplyr mutate tibble
-#' @importFrom magrittr %>%
-#' @importFrom rlang enquo quo_name !!
 #' @importFrom stats na.omit qqnorm
 #'
-nscore <- function(df, d, na.rm = TRUE) {
+nscore_model <- function(x, na.rm = TRUE) {
 
-    d <- enquo(d)
-    d_str <- quo_name(d)
-
-    if(na.rm) {
-        data <- df %>%
-            na.omit(!!d)
-    } else {
-        data <- df
-    }
-
-    # Transform the data.
-    data <- data %>%
-        mutate(nscore = qqnorm(!!d, plot.it = FALSE)$x)
-
+    if(na.rm) {x <- na.omit(x)}
 
     # Create transform table for back-transformation.
-    transform_table <- tibble(
-        x = sort(data[,d_str]),
-        nscore = sort(data[,"nscore"]))
+    nscore <- qqnorm(x, plot.it = FALSE)$x
+    model <- data.frame(x = sort(x), nscore = sort(nscore))
 
-    return (list(nscore = data, transform_table = transform_table))
+    return(model)
 
 }
 
@@ -69,58 +51,57 @@ nscore <- function(df, d, na.rm = TRUE) {
 #' https://msu.edu/~ashton/research/code/nscore.R
 #' Originally based on the GSLIB code for backtr function.
 #'
-#' @param scores Numeric vector of normal score transformed data.
-#' @param transform_table Dataframe with column of raw data matched to column of
+#' @param model Dataframe with column of raw data matched to column of
 #'     normal score data. Is output of `nscore` function.
 #' @param tails Treatment of distribution tails: "none", "separate", or "equal".
 #' @param draw Plot the distributions.
 #'
-#' @return Numeric vector of back=transformed values.
+#' @return Numeric vector of back-transformed values.
 #' @export
 #' @importFrom graphics plot
 #' @importFrom stats approxfun sd
-backtr <- function(scores, transform_table, tails = "none", draw = FALSE) {
+backtr <- function(model, tails = "none", draw = FALSE) {
 
     if(tails == "separate") {
-        x_mean <- mean(transform_table$x)
-        x_small <- transform_table$x < x_mean
-        x_large <- transform_table$x > x_mean
-        sd_small <- sqrt(sum((transform_table$x[x_small] - x_mean)^2) /
-                (length(transform_table$x[x_small]) - 1))
-        sd_large <- sqrt(sum((transform_table$x[x_large] - x_mean)^2) /
-                (length(transform_table$x[x_large]) - 1))
-        x_min <- mean(transform_table$x) + (min(scores) * sd_small)
-        x_max <- mean(transform_table$x) + (max(scores) * sd_large)
+        x_mean <- mean(model$x)
+        x_small <- model$x < x_mean
+        x_large <- model$x > x_mean
+        sd_small <- sqrt(sum((model$x[x_small] - x_mean)^2) /
+                (length(model$x[x_small]) - 1))
+        sd_large <- sqrt(sum((model$x[x_large] - x_mean)^2) /
+                (length(model$x[x_large]) - 1))
+        x_min <- mean(model$x) + (min(scores) * sd_small)
+        x_max <- mean(model$x) + (max(scores) * sd_large)
         # Check if max and min are LESS extreme than the initial data - if so, use
         # the initial data in their place.
-        if(x_max > min(transform_table$x)) {
-            x_min <- min(transform_table$x)
+        if(x_max > min(model$x)) {
+            x_min <- min(model$x)
         }
-        if(x_max < max(transform_table$x)) {
-            x_max <- max(transform_table$x)
+        if(x_max < max(model$x)) {
+            x_max <- max(model$x)
         }
     } else if (tails == "equal") { # Assume symmetric distribution around mean.
-        x_mean <- mean(transform_table$x)
-        x_sd <- sd(transform_table$x)
-        x_min <- mean(transform_table$x) + (min(scores) * x_sd)
-        x_max <- mean(transform_table$x) + (max(scores) * x_sd)
+        x_mean <- mean(model$x)
+        x_sd <- sd(model$x)
+        x_min <- mean(model$x) + (min(scores) * x_sd)
+        x_max <- mean(model$x) + (max(scores) * x_sd)
         # Check if max and min are LESS extreme than the initial data - if so, use
         # the initial data in their place.
-        if(x_max > min(transform_table$x)) {
-            x_min <- min(transform_table$x)
+        if(x_max > min(model$x)) {
+            x_min <- min(model$x)
         }
-        if(x_max < max(transform_table$x)) {
-            x_max <- max(transform_table$x)
+        if(x_max < max(model$x)) {
+            x_max <- max(model$x)
         }
     } else { # No extrapolation.
-        x_min <- min(transform_table$x)
-        x_max <- max(transform_table$x)
+        x_min <- min(model$x)
+        x_max <- max(model$x)
     }
 
     sc_min <- min(scores)
     sc_max <- max(scores)
-    x <- c(x_min, transform_table$x, x_max)
-    sc_n <- c(sc_min, transform_table$nscore, sc_max)
+    x <- c(x_min, model$x, x_max)
+    sc_n <- c(sc_min, model$nscore, sc_max)
 
     if(draw) {plot(sc_n, x, main = "Transform Function")}
 

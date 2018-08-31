@@ -4,9 +4,11 @@
 \alias{backtr}
 \title{Back-transform normal score transformed data.}
 \usage{
-backtr(model, tails = "none", draw = FALSE)
+backtr(scores, model, tails = "none", draw = FALSE)
 }
 \arguments{
+\item{scores}{Numeric vector of normal score data to be transformed.}
+
 \item{model}{Dataframe with column of raw data matched to column of
 normal score data. Is output of `nscore` function.}
 

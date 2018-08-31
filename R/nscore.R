@@ -51,6 +51,7 @@ nscore_model <- function(x, na.rm = TRUE) {
 #' https://msu.edu/~ashton/research/code/nscore.R
 #' Originally based on the GSLIB code for backtr function.
 #'
+#' @param scores Numeric vector of normal score data to be transformed.
 #' @param model Dataframe with column of raw data matched to column of
 #'     normal score data. Is output of `nscore` function.
 #' @param tails Treatment of distribution tails: "none", "separate", or "equal".
@@ -60,7 +61,7 @@ nscore_model <- function(x, na.rm = TRUE) {
 #' @export
 #' @importFrom graphics plot
 #' @importFrom stats approxfun sd
-backtr <- function(model, tails = "none", draw = FALSE) {
+backtr <- function(scores, model, tails = "none", draw = FALSE) {
 
     if(tails == "separate") {
         x_mean <- mean(model$x)

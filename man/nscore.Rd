@@ -4,12 +4,14 @@
 \alias{nscore}
 \title{Normal score transformation of data.}
 \usage{
-nscore(x, na.rm = TRUE)
+nscore(df, d, na.rm = TRUE)
 }
 \arguments{
-\item{x}{Numeric vector, data to be transformed.}
+\item{df}{Data frame.}
 
-\item{na.rm}{Boolean, remove NAs from x.}
+\item{d}{Column in data frame to be transformed.}
+
+\item{na.rm}{Boolean, remove NAs from d. Defult is TRUE.}
 }
 \value{
 Named list of data frames with transformed data and transformation

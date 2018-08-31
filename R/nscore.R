@@ -9,24 +9,41 @@
 #' https://msu.edu/~ashton/research/code/nscore.R
 #' Originally based on the GSLIB code for nscore function.
 #'
-#' @param x Numeric vector, data to be transformed.
-#' @param na.rm Boolean, remove NAs from x.
+#' @param df Data frame.
+#' @param d Column in data frame to be transformed.
+#' @param na.rm Boolean, remove NAs from d. Defult is TRUE.
 #'
 #' @return Named list of data frames with transformed data and transformation
 #'     table.
 #' @export
+#' @importFrom dplyr mutate tibble
+#' @importFrom magrittr %>%
+#' @importFrom rlang enquo quo_name !!
 #' @importFrom stats na.omit qqnorm
-nscore <- function(x, na.rm = TRUE) {
+#'
+nscore <- function(df, d, na.rm = TRUE) {
 
-    if(na.rm) {x <- na.omit(x)}
+    d <- enquo(d)
+    d_str <- quo_name(d)
+
+    if(na.rm) {
+        data <- df %>%
+            na.omit(!!d)
+    } else {
+        data <- df
+    }
 
     # Transform the data.
-    nscore <- qqnorm(x, plot.it = FALSE)$x
+    data <- data %>%
+        mutate(nscore = qqnorm(!!d, plot.it = FALSE)$x)
+
 
     # Create transform table for back-transformation.
-    transform_table <- data.frame(x = sort(x), nscore = sort(nscore))
+    transform_table <- tibble(
+        x = sort(data[,d_str]),
+        nscore = sort(data[,"nscore"]))
 
-    return (list(nscore = nscore, transform_table = transform_table))
+    return (list(nscore = data, transform_table = transform_table))
 
 }
 

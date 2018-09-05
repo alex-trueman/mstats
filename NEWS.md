@@ -9,3 +9,7 @@
 
 * Add `nscore` and `backtr` functions.
 * Add `descstat` function.
+
+# 0.1.3
+
+* Add nice default for `descstat` `sep` parameter.

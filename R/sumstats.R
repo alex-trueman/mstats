@@ -290,8 +290,8 @@ topcut_sumstats <- function(df, group, value, value_tc, weight, digits) {
 #' @author Alex M Trueman
 #'
 #' @param df Dataframe
-#' @param sep Character string separating original column name and statistic.
 #' @param ... List of column names to be evaluated.
+#' @param sep Character string separating original column name and statistic.
 #'
 #' @return Dataframe of statistics for each column input.
 #' @export
@@ -300,7 +300,7 @@ topcut_sumstats <- function(df, group, value, value_tc, weight, digits) {
 #' @importFrom rlang quos !!!
 #' @importFrom stats median na.omit quantile sd var
 #' @importFrom tidyr gather separate spread
-descstat <- function(df, sep, ...) {
+descstat <- function(df, ..., sep = "_(?=[^_]+$)") {
 
     vars <- quos(...)
 

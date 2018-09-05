@@ -1,7 +1,7 @@
 Package: mstats
 Type: Package
 Title: Some Miscellaneous Statistical Functions
-Version: 0.1.2
+Version: 0.1.3
 Author: Alex M Trueman
 Maintainer: Alex M Trueman <amt4158@gmail.com>
 Description: Just a bunch of statistical functions that I have written and use

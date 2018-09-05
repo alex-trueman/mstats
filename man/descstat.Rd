@@ -4,14 +4,14 @@
 \alias{descstat}
 \title{Descriptive statistics for a series of columns.}
 \usage{
-descstat(df, sep, ...)
+descstat(df, ..., sep = "_(?=[^_]+$)")
 }
 \arguments{
 \item{df}{Dataframe}
 
-\item{sep}{Character string separating original column name and statistic.}
-
 \item{...}{List of column names to be evaluated.}
+
+\item{sep}{Character string separating original column name and statistic.}
 }
 \value{
 Dataframe of statistics for each column input.

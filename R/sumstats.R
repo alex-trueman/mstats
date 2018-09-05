@@ -285,21 +285,28 @@ topcut_sumstats <- function(df, group, value, value_tc, weight, digits) {
   )
 }
 
-#' Descriptive statistics for a series of columns.
+#' Detailed descriptive statistics for one or more columns columns.
 #'
 #' @author Alex M Trueman
 #'
 #' @param df Dataframe
-#' @param ... List of column names to be evaluated.
+#' @param ... One or more numeric column names to be evaluated.
 #' @param sep Character string separating original column name and statistic.
+#'    By default, this is a regex that finds the last underscore character in
+#'    the column name. Normally this will work and doesn't need to be changed.
 #'
 #' @return Dataframe of statistics for each column input.
 #' @export
 #' @importFrom dplyr funs n select summarise_all
 #' @importFrom magrittr %>%
+#' @importFrom moments skewness
 #' @importFrom rlang quos !!!
 #' @importFrom stats median na.omit quantile sd var
 #' @importFrom tidyr gather separate spread
+#'
+#' @examples
+#' d <- data.frame(a = rnorm(10, 100, 20), b = rnorm(10, 1, 2))
+#' descstat(d, a, b)
 descstat <- function(df, ..., sep = "_(?=[^_]+$)") {
 
     vars <- quos(...)
@@ -316,11 +323,13 @@ descstat <- function(df, ..., sep = "_(?=[^_]+$)") {
             max = max,
             mean = mean,
             sd = sd,
-            var = var)) %>%
+            var = var,
+            skew = skewness)) %>%
         gather(statistic, value) %>%
         separate(statistic, into = c("variable", "statistic"), sep = sep) %>%
         spread(statistic, value) %>%
-        select(variable, n, min, q25, median, q75, max, mean, sd, var)
+        mutate(cv = sd / mean) %>%
+        select(variable, n, min, q25, median, q75, max, mean, sd, var, cv, skew)
 
     return(x)
 

@@ -2,22 +2,28 @@
 % Please edit documentation in R/sumstats.R
 \name{descstat}
 \alias{descstat}
-\title{Descriptive statistics for a series of columns.}
+\title{Detailed descriptive statistics for one or more columns columns.}
 \usage{
 descstat(df, ..., sep = "_(?=[^_]+$)")
 }
 \arguments{
 \item{df}{Dataframe}
 
-\item{...}{List of column names to be evaluated.}
+\item{...}{One or more numeric column names to be evaluated.}
 
-\item{sep}{Character string separating original column name and statistic.}
+\item{sep}{Character string separating original column name and statistic.
+By default, this is a regex that finds the last underscore character in
+the column name. Normally this will work and doesn't need to be changed.}
 }
 \value{
 Dataframe of statistics for each column input.
 }
 \description{
-Descriptive statistics for a series of columns.
+Detailed descriptive statistics for one or more columns columns.
+}
+\examples{
+d <- data.frame(a = rnorm(10, 100, 20), b = rnorm(10, 1, 2))
+descstat(d, a, b)
 }
 \author{
 Alex M Trueman

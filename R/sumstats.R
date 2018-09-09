@@ -7,50 +7,64 @@
 #' @author Alex M Trueman
 #'
 #' @param bm Block model as data frame.
-#' @param bm_columns Character vector of column names in block model for calculation of means.
+#' @param bm_value Name of column in block model for calculation of mean.
 #' @param samp Sample data as data frame.
 #' @param samp_value Name of field in sample data for mean calculation.
-#' @param samp_weight Decluster weight field in sample file.
 #' @param group Grouping field present in block model and sample data.
+#' @param samp_weight Optional decluster weight field in sample file.
 #'
-#' @return List of data frames with wide (for report tables) and tall (tidy) layout.
+#' @return List of data frames with wide (for report tables) and tall (tidy)
+#'     layout.
 #' @export
 #' @importFrom dplyr funs group_by left_join summarise_at summarise
 #' @importFrom magrittr %>%
 #' @importFrom rlang enquo quo_name
 #' @importFrom stats weighted.mean
 #' @importFrom tidyr gather
-means_by_group <- function(bm, bm_columns, samp, samp_value, samp_weight, group) {
+means_by_group <- function(
+    bm, bm_value, samp, samp_value, group, samp_weight = NULL) {
 
-  samp_value <- enquo(samp_value)
-  samp_weight <- enquo(samp_weight)
-  group <- enquo(group)
-  group_str <- quo_name(group)
+    group <- enquo(group)
+    group_str <- quo_name(group)
+    bm_value <- enquo(bm_value)
 
-  # Block model means.
-  bm_means <- bm %>%
-    group_by(!! group) %>%
-    summarise_at(bm_columns, funs(mean(., na.rm = TRUE)))
+    # Block model mean.
+    bm_means <- bm %>%
+        group_by(!!group) %>%
+        summarise(bm = mean(!!bm_value, na.rm = TRUE))
 
-  # Sample means.
-  samp_means <- samp %>%
-    group_by(!! group) %>%
-    summarise(
-      naive = mean(!! samp_value, na.rm = TRUE),
-      declustered = weighted.mean(!! samp_value, !! samp_weight, na.rm = TRUE)
-    )
+    # Sample means.
+    samp_value <- enquo(samp_value)
+    if(is.null(samp_weight)) {
+        samp_means <- samp %>%
+            group_by(!!group) %>%
+            summarise(naive = mean(!!samp_value, na.rm = TRUE))
+    } else {
+        samp_weight <- enquo(samp_weight)
+        samp_means <- samp %>%
+            group_by(!!group) %>%
+            summarise(
+                naive = mean(!!samp_value, na.rm = TRUE),
+                declustered = weighted.mean(!!samp_value, !!samp_weight,
+                    na.rm = TRUE)
+                )
+    }
 
-  # Join block and sample mean data in wide format.
-  all_means_wide <- bm_means %>%
-    left_join(samp_means, by = group_str)
+    # Join block and sample mean data in wide format.
+    all_means_wide <- bm_means %>%
+        left_join(samp_means, by = group_str)
 
-  # Create tidy format and make type an ordered factor so that plot order is controlled.
-  all_means_tall <- all_means_wide %>%
-    gather(type, mean, -c(!! group)) %>%
-    mutate(
-      type = factor(type, levels = c(bm_columns, "naive", "declustered"), ordered = TRUE))
+# Create tidy format and make type an ordered factor so that plot order is
+# controlled.
+all_means_tall <- all_means_wide %>%
+    gather(type, mean, -c(!!group)) %>%
+    mutate(type = factor(
+        type,
+        levels = c("bm", "naive", "declustered"),
+        ordered = TRUE)
+        )
 
-  return(list(wide = all_means_wide, tall = all_means_tall))
+return(list(wide = all_means_wide, tall = all_means_tall))
 
 }
 

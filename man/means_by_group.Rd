@@ -4,23 +4,24 @@
 \alias{means_by_group}
 \title{Calculate means for model and sample data for tabulation and plotting.}
 \usage{
-means_by_group(bm, bm_columns, samp, samp_value, samp_weight, group)
+means_by_group(bm, bm_value, samp, samp_value, group, samp_weight = NULL)
 }
 \arguments{
 \item{bm}{Block model as data frame.}
 
-\item{bm_columns}{Character vector of column names in block model for calculation of means.}
+\item{bm_value}{Name of column in block model for calculation of mean.}
 
 \item{samp}{Sample data as data frame.}
 
 \item{samp_value}{Name of field in sample data for mean calculation.}
 
-\item{samp_weight}{Decluster weight field in sample file.}
-
 \item{group}{Grouping field present in block model and sample data.}
+
+\item{samp_weight}{Optional decluster weight field in sample file.}
 }
 \value{
-List of data frames with wide (for report tables) and tall (tidy) layout.
+List of data frames with wide (for report tables) and tall (tidy)
+    layout.
 }
 \description{
 Get means by domain group for various variables from block model and sample

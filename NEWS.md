@@ -14,3 +14,4 @@
 
 * Add nice default for `descstat` `sep` parameter.
 * Add statistics 'cv' and 'skew' to `descstat`.
+* Refactored `means_by_group` making decluster weight optional.
